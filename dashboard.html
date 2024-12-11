@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainability Metrics Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+			background-color: #f4f4f9;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .charts {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .chart-container {
+            width: 45%;
+            max-width: 400px;
+            height: 300px;
+            margin: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            padding: 10px;
+            position: relative;
+			transition: transform 0.3s ease;
+        }
+		.chart-container:hover {
+			transform: scale(1.05);
+			box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+		}
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>Sustainability Metrics Dashboard</h1>
+        </header>
+        <main class="charts">
+            <section class="chart-container">
+                <canvas id="barChart"></canvas>
+            </section>
+            <section class="chart-container">
+                <canvas id="lineChart"></canvas>
+            </section>
+            <section class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </section>
+            <section class="chart-container">
+                <canvas id="barChart2"></canvas>
+            </section>
+            <section class="chart-container">
+                <canvas id="lineChart2"></canvas>
+            </section>
+            <section class="chart-container">
+                <canvas id="pieChart2"></canvas>
+            </section>
+        </main>
+    </div>
+    <script>
+        window.onload = function() {
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            const lineCtx = document.getElementById('lineChart').getContext('2d');
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            const barCtx2 = document.getElementById('barChart2').getContext('2d');
+            const lineCtx2 = document.getElementById('lineChart2').getContext('2d');
+            const pieCtx2 = document.getElementById('pieChart2').getContext('2d');
+
+            const barData = {
+                labels: ['Battery Disposal', 'Desktop Recycling', 'Laptop Recycling', 'Miscellaneous', 'Mobile Phone Recycling', 'Printer Recycling', 'TV Recycling'],
+                datasets: [
+                    {
+                        label: 'Total Volume of Waste Collected (kg)',
+                        data: [197.44, 191.74, 311.89, 285.8, 244.61, 272.61, 248.12],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                    },
+                    {
+                        label: 'Energy Conserved in Week 4 (kWh)',
+                        data: [397.6, 172.01, 520.2, 635.82, 326.26, 1008.59, 167.99],
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    },
+					{
+						label: 'Percentage of Toxic Substances Safely Disposed',
+						data: [31.31, 37.05, 35.67, 42.58, 41.48, 39.25, 28.13],
+						backgroundColor: 'rgba(153, 102, 255, 0.6)'
+					}
+                ]
+            };
+
+            const lineData = {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                datasets: [
+                    {
+                        label: 'Reduction in Carbon Emissions (kg)',
+                        data: [807.16, 789.8, 687.13, 996.27, 327.5],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'Greenhouse Gas Emissions (kg)',
+                        data: [1103.78, 809.25, 961.83, 1225.98, 460.4],
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'Weekly Job Completion Trend',
+                        data: [20, 20, 22, 28, 10],
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }
+                ]
+            };
+
+            const pieData = {
+                labels: ['Large', 'Medium', 'Small'],
+                datasets: [{
+                    label: 'Percentage of Waste Category Distribution',
+                    data: [15, 64, 21],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)'
+                    ]
+                }]
+            };
+
+            const barData2 = {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                datasets: [{
+                    label: 'Total Volume of Waste Collected by Category',
+                    data: [218.21, 183.84, 270.25, 340.89, 170.94],
+                    backgroundColor: 'rgba(153, 102, 255, 0.6)'
+                }]
+            };
+
+            const lineData2 = {
+                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'],
+                datasets: [
+                    {
+                        label: 'Distribution of Disposal Fees',
+                        data: [13.69, 35.2, 6.78, 70.43, 17.48, 23, 22.07, 46.45, 7.84, 31,22, 35.93, 35.9, 41.71, 56.74, 8.22, 30.92, 38.02, 26.05, 31.07, 36.32, 12.48, 11.85, 24.67, 24.52, 42.46, 20.97, 12.62, 12.53, 25.77, 16.77, 72.71, 14.47, 32.6, 
+						25.27, 7.63, 11.92, 28.66, 21.25, 34.36, 34.81, 25.51, 19.42, 25.77, 33.78, 8.29, 7.3, 73.36, 43.43, 20.85, 37.24, 25.65, 38.73, 17.48, 47.23, 23.97, 20.3, 16.29, 25.49, 30.03, 13.83, 31.67, 40.45, 67.36, 22.17, 41.22, 36.94, 14.07,
+						15.3, 26.24, 27.47, 17.03, 16.13, 21.37, 10.58, 13.49, 10.64, 23.4, 25.6, 24.91, 22.19, 15.27, 18.36, 45.17, 48.42, 67.22, 14.43, 11.99, 7.6, 62.72, 32.93, 10.49, 10.74, 42.17, 22.1, 17.11, 26.35, 17.62, 18.13, 16.2, 35.07],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }
+                ]
+            };
+
+            const pieData2 = {
+                labels: ['Number of E-Waste Collection Jobs Fulfilled', 'Average disposal fee for Collection jobs'],
+                datasets: [{
+                    label: 'Number of E-Waste Collection Jobs Fulfilled',
+                    data: [100, 27.0583],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(153, 102, 255, 0.6)'
+                    ]
+                }]
+            };
+			
+            new Chart(barCtx, {
+                type: 'bar',
+                data: barData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            new Chart(lineCtx, {
+                type: 'line',
+                data: lineData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            new Chart(pieCtx, {
+                type: 'pie',
+                data: pieData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            new Chart(barCtx2, {
+                type: 'bar',
+                data: barData2,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            new Chart(lineCtx2, {
+                type: 'line',
+                data: lineData2,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            new Chart(pieCtx2, {
+                type: 'pie',
+                data: pieData2,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        };
+    </script>
+</body>
+</html>
